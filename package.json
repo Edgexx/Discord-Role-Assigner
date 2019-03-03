@@ -1,0 +1,12 @@
+{
+  "name": "role-assigner",
+  "version": "1.0.0",
+  "description": "Assign roles to users based on reactions to pinned messages.",
+  "main": "bot.js",
+  "author": "Shay Buttaccio",
+  "dependencies": {
+    "discord.io": "^2.5.3",
+    "discord.js": "^11.4.2",
+    "winston": "^3.2.1"
+  }
+}
