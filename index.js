@@ -1,5 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
+const bot = require('./bot.js');
 const config = require('./config.json');
 const prefix = config.prefix;
 const token = config.token;
@@ -51,7 +52,6 @@ client.on('message', message => {
 	const user = client.users.get(data.user_id);
 	const channel = client.channels.get(data.channel_id) || await user.createDM();
 
-	if (data.message_id != "551468594970492947") return;
 	if (channel.messages.has(data.message_id)) return;
 
 	const message = await channel.fetchMessage(data.message_id);
@@ -68,10 +68,18 @@ client.on('message', message => {
 
 client.on('messageReactionAdd', (reaction, user) => {
 	console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
+	if(!user.bot && reaction.message.id == config.assignmentMessage){
+		const member = reaction.message.channel.guild.member(user);
+		bot.addRoleToMember(member, reaction.emoji.name);
+	}
 });
 
 client.on('messageReactionRemove', (reaction, user) => {
 	console.log(`${user.username} removed their "${reaction.emoji.name}" reaction.`);
+	if(!user.bot && reaction.message.id == config.assignmentMessage){
+		const member = reaction.message.channel.guild.member(user);
+		bot.removeRoleFromMember(member, reaction.emoji.name);
+	}
 });
 
 client.login(token);

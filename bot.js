@@ -134,3 +134,94 @@ exports.updateAssignmentMessage = function(message){
         message.reply('Cannot edit the main role assignment message because it does not exist.. :x:')
     }
 }
+
+exports.addRoleToMember = function (member, emoji){
+    var rolesJSON = require('./roles.json');
+    var requestedRoleName = '';
+    for(const r in rolesJSON){
+        if(rolesJSON[r] == emoji){
+            requestedRoleName = r;
+            break;
+        }
+    }
+
+    if(requestedRoleName == '') return;
+
+    var requestedRole = null;
+    var assignerRole = null;
+    var roleExists = false;
+
+    for (const role of member.guild.roles) {
+        if(role[1].name.toLowerCase() == requestedRoleName){
+            requestedRole = role[1];
+            roleExists = true;
+            continue;
+        }
+
+        if(role[1].name == "Role Assigner"){
+            assignerRole = role[1];
+            continue;
+        }
+    }
+
+    if(!roleExists) return;
+
+    // Check if the member already has this role..
+    for (const role of member.roles) {
+        if(role[1].name.toLowerCase() == requestedRole.name.toLowerCase()) return;
+    }
+
+    if (roleExists && requestedRole) {
+        if (assignerRole.position > requestedRole.position) {
+            member.addRole(requestedRole.id);
+        }
+    }
+
+}
+
+exports.removeRoleFromMember = function (member, emoji){
+    var rolesJSON = require('./roles.json');
+    var requestedRoleName = '';
+    for(const r in rolesJSON){
+        if(rolesJSON[r] == emoji){
+            requestedRoleName = r;
+            break;
+        }
+    }
+
+    if(requestedRoleName == '') return;
+
+    var requestedRole = null;
+    var assignerRole = null;
+    var roleExists = false;
+
+    for (const role of member.guild.roles) {
+        if(role[1].name.toLowerCase() == requestedRoleName){
+            requestedRole = role[1];
+            roleExists = true;
+            continue;
+        }
+
+        if(role[1].name == "Role Assigner"){
+            assignerRole = role[1];
+            continue;
+        }
+    }
+
+    if(!roleExists) return;
+
+    var memberHasRole = false;
+    // Check if the member already has this role..
+    for (const role of member.roles) {
+        if(role[1].name.toLowerCase() == requestedRole.name.toLowerCase()){
+            memberHasRole = true;
+        }
+    }
+
+    if (roleExists && memberHasRole && requestedRole) {
+        if (assignerRole.position > requestedRole.position) {
+            member.removeRole(requestedRole.id);
+        }
+    }
+
+}
